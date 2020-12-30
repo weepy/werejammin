@@ -1,0 +1,322 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BDE55AD6259B98300074F593 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BDE55AD5259B98300074F593 /* main.cpp */; };
+		BDE55ADE259B989B0074F593 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDE55ADD259B989B0074F593 /* CoreAudio.framework */; };
+		BDE55AE0259BA87A0074F593 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDE55ADF259BA87A0074F593 /* AudioToolbox.framework */; };
+		BDE55AE2259BA8810074F593 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDE55AE1259BA8800074F593 /* AudioUnit.framework */; };
+		BDE55AE4259BA8870074F593 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDE55AE3259BA8870074F593 /* CoreFoundation.framework */; };
+		BDE55AE6259BA89D0074F593 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDE55AE5259BA89D0074F593 /* libportaudio.a */; };
+		BDE55AE8259BA8A90074F593 /* libuv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDE55AE7259BA8A90074F593 /* libuv.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BDE55AD0259B98300074F593 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		BDE55AD2259B98300074F593 /* jammin */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = jammin; sourceTree = BUILT_PRODUCTS_DIR; };
+		BDE55AD5259B98300074F593 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		BDE55ADD259B989B0074F593 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		BDE55ADF259BA87A0074F593 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		BDE55AE1259BA8800074F593 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		BDE55AE3259BA8870074F593 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		BDE55AE5259BA89D0074F593 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../../../usr/local/Cellar/portaudio/19.6.0/lib/libportaudio.a; sourceTree = "<group>"; };
+		BDE55AE7259BA8A90074F593 /* libuv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libuv.a; path = ../../../../../../usr/local/Cellar/libuv/1.40.0/lib/libuv.a; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BDE55ACF259B98300074F593 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BDE55AE8259BA8A90074F593 /* libuv.a in Frameworks */,
+				BDE55AE6259BA89D0074F593 /* libportaudio.a in Frameworks */,
+				BDE55AE4259BA8870074F593 /* CoreFoundation.framework in Frameworks */,
+				BDE55AE2259BA8810074F593 /* AudioUnit.framework in Frameworks */,
+				BDE55AE0259BA87A0074F593 /* AudioToolbox.framework in Frameworks */,
+				BDE55ADE259B989B0074F593 /* CoreAudio.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BDE55AC9259B98300074F593 = {
+			isa = PBXGroup;
+			children = (
+				BDE55AD4259B98300074F593 /* jammin */,
+				BDE55AD3259B98300074F593 /* Products */,
+				BDE55ADC259B989B0074F593 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		BDE55AD3259B98300074F593 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BDE55AD2259B98300074F593 /* jammin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BDE55AD4259B98300074F593 /* jammin */ = {
+			isa = PBXGroup;
+			children = (
+				BDE55AD5259B98300074F593 /* main.cpp */,
+			);
+			path = jammin;
+			sourceTree = "<group>";
+		};
+		BDE55ADC259B989B0074F593 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BDE55AE7259BA8A90074F593 /* libuv.a */,
+				BDE55AE5259BA89D0074F593 /* libportaudio.a */,
+				BDE55AE3259BA8870074F593 /* CoreFoundation.framework */,
+				BDE55AE1259BA8800074F593 /* AudioUnit.framework */,
+				BDE55ADF259BA87A0074F593 /* AudioToolbox.framework */,
+				BDE55ADD259B989B0074F593 /* CoreAudio.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BDE55AD1259B98300074F593 /* jammin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BDE55AD9259B98300074F593 /* Build configuration list for PBXNativeTarget "jammin" */;
+			buildPhases = (
+				BDE55ACE259B98300074F593 /* Sources */,
+				BDE55ACF259B98300074F593 /* Frameworks */,
+				BDE55AD0259B98300074F593 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = jammin;
+			productName = jammin;
+			productReference = BDE55AD2259B98300074F593 /* jammin */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BDE55ACA259B98300074F593 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1130;
+				ORGANIZATIONNAME = "Jonah Fox";
+				TargetAttributes = {
+					BDE55AD1259B98300074F593 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+				};
+			};
+			buildConfigurationList = BDE55ACD259B98300074F593 /* Build configuration list for PBXProject "jammin" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BDE55AC9259B98300074F593;
+			productRefGroup = BDE55AD3259B98300074F593 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BDE55AD1259B98300074F593 /* jammin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BDE55ACE259B98300074F593 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BDE55AD6259B98300074F593 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		BDE55AD7259B98300074F593 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BDE55AD8259B98300074F593 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BDE55ADA259B98300074F593 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib,
+					/usr/local/Cellar/portaudio/19.6.0/lib,
+					/usr/local/Cellar/libuv/1.40.0/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BDE55ADB259B98300074F593 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib,
+					/usr/local/Cellar/portaudio/19.6.0/lib,
+					/usr/local/Cellar/libuv/1.40.0/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BDE55ACD259B98300074F593 /* Build configuration list for PBXProject "jammin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BDE55AD7259B98300074F593 /* Debug */,
+				BDE55AD8259B98300074F593 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BDE55AD9259B98300074F593 /* Build configuration list for PBXNativeTarget "jammin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BDE55ADA259B98300074F593 /* Debug */,
+				BDE55ADB259B98300074F593 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BDE55ACA259B98300074F593 /* Project object */;
+}
