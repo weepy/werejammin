@@ -22,20 +22,17 @@ uint64_t getTimestamp() {
 
 
 
-#define PORT 2222
-#define HOST "127.0.0.1"
+
+#define SEND_PORT 3333
+#define SEND_HOST "localhost"
 
 
-#define REMOTE_PORT 2222
-#define REMOTE_HOST "127.0.0.1"
-
-
-
-
-// static uv_udp_t* udp_socket = NULL;
 static uv_loop_t *uv_loop;
 static uv_udp_t   sock;
-struct sockaddr_in remote_addr;
+struct sockaddr_in send_addr;
+
+// static uv_udp_t   recv_sock;
+static struct sockaddr_in recv_addr;
 
 
 // called after the data was sent
@@ -50,17 +47,14 @@ static void on_send(uv_udp_send_t* req, int status)
 
 void timer_cb (uv_timer_t* timer, int status) {
 
-    const char* msg = "hello";
-    // clock_t cpu_time = clock();
-
+    
     int64_t now = getTimestamp();
     
-	// fprintf(stderr, "sending %s %lld \n", msg, (long long) now);
+	fprintf(stderr, "sending %lld \n", (long long) now);
 
     uv_udp_send_t* res = malloc(sizeof(uv_udp_send_t));
-    uv_buf_t buff = uv_buf_init((char*) &now, sizeof(int64_t));
-    uv_udp_send(res, &sock, &buff, 1, (const struct sockaddr*) &remote_addr, on_send);
-    
+    uv_buf_t buff = uv_buf_init((char *) &now, sizeof(now));
+    uv_udp_send(res, &sock, &buff, 1, (const struct sockaddr*) &send_addr, 0);    
 
 }
 
@@ -84,7 +78,7 @@ static void on_read(uv_udp_t *req_sock, ssize_t nread, const uv_buf_t *buf,
 
         int diff = (int)(getTimestamp()- packetTime);
         
-        fprintf(stderr, "Recv from %s: %lld took %d \n", sender, (long long) packetTime, diff);
+        fprintf(stderr, "Recv from %s: %lld took %dus \n", sender, (long long) packetTime, diff);
     }
 
     free(buf->base);
@@ -99,6 +93,7 @@ static void alloc_buffer(uv_handle_t *handle, size_t suggested_size, uv_buf_t *b
 
 
 
+
 int main(int argc,char *argv[]) {
     int status=0;
 
@@ -108,28 +103,29 @@ int main(int argc,char *argv[]) {
 
     uv_timer_t timer;
 	uv_timer_init(uv_loop, &timer);
-	uv_timer_start(&timer, (uv_timer_cb) &timer_cb, 0, 25);
+	uv_timer_start(&timer, (uv_timer_cb) &timer_cb, 25, 1000);
 
-    uv_ip4_addr(REMOTE_HOST, REMOTE_PORT, &remote_addr);
-
+    
     
     status = uv_udp_init(uv_loop,&sock);
     CHECK(status,"init");
 
 
-    struct sockaddr_in addr;
 
-    uv_ip4_addr(HOST, PORT, &addr);
+    uv_ip4_addr(SEND_HOST, SEND_PORT, &send_addr);    
+    uv_ip4_addr("0.0.0.0", 0, &recv_addr);
 
-    status = uv_udp_bind(&sock, (const struct sockaddr*)&addr, UV_UDP_REUSEADDR);
+
+    status = uv_udp_bind(&sock, (const struct sockaddr*)&recv_addr, UV_UDP_REUSEADDR);
     CHECK(status,"bind");
 
     status = uv_udp_recv_start(&sock, alloc_buffer, on_read);
     CHECK(status,"recv");
+
+    printf("client jammin on: UDP port: %d\n", SEND_PORT);
+    
     
 
-
-    printf("client jammin on: UDP port: %d\n", PORT);
     
     uv_run(uv_loop, UV_RUN_DEFAULT);
 

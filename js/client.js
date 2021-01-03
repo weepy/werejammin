@@ -1,35 +1,45 @@
-const { Buffer } = require('buffer')
+// CLIENT
 
-// creating a client socket
-const client = udp.createSocket('udp4')
+const dgram = require('dgram')
+const socket = dgram.createSocket('udp4')
+const HOST = 'b33p.live'
+const PORT = 3333
 
-//buffer msg
-const data = Buffer.from('siddheshrane')
+setInterval(() => {
 
-client.on('message', (msg,info) => {
-  console.log('Data received from server : ' + msg.toString())
-  console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port)
+    const t = new Uint32Array(128)
+    const time = process.hrtime()
+    t[0] = time[0]
+    t[1] = time[1]
+    
+    socket.send(Buffer.from(t.buffer), PORT, HOST)    
+}, 1000)
+
+function hrtimeToMs([s, ns]) {
+    return s*1000 + ns/1000000
+}
+
+let smoothed = 0
+let max = 0
+
+socket.on('message', (msg, remote) => {
+
+    const arr = new Uint32Array(msg.buffer)
+    const now = process.hrtime()
+    const delta = hrtimeToMs(now) - hrtimeToMs(arr)
+
+    console.log("received", delta)
+    // smoothed = delta * 0.1 + smoothed * 0.9
+
+    // if(delta > max) {
+    //     max = delta
+    // }
+    // else {
+    //     max = delta * (0.05) + max * 0.95
+    // }
 })
 
-//sending msg
-client.send(data,2222,'localhost', (error) => {
-  if(error){
-    client.close()
-  }
-  else{
-    console.log('Data sent !!!')
-  }
-})
-
-const data1 = Buffer.from('hello')
-const data2 = Buffer.from('world')
-
-//sending multiple msg
-client.send([data1,data2],2222,'localhost', (error) => {
-  if(error){
-    client.close()
-  }
-  else{
-    console.log('Data sent !!!')
-  }
-})
+// setInterval(() => {
+//     console.clear()
+//     console.log(Math.floor(smoothed*10)/10 +"\n"+ Math.floor(max*10)/10)
+// }, 100)

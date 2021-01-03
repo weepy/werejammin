@@ -3,10 +3,7 @@
 #include <string.h>
 #include "uv.h"
 
-
-
-
-#define PORT 2222
+#define PORT 3333
 #define HOST "localhost"
 
 #define CHECK(r, msg)                                       \
@@ -43,7 +40,7 @@ static void on_read(uv_udp_t *req, ssize_t nread, const uv_buf_t *buf,
     if (nread > 0) {
         char sender[17] = { 0 };
         uv_ip4_name((const struct sockaddr_in*) addr, sender, 16);
-        // fprintf(stderr, "Recv from %s\n", sender);
+        fprintf(stderr, "Recv from %s\n", sender);
 
         uv_udp_send_t* res = malloc(sizeof(uv_udp_send_t));
         uv_buf_t buff = uv_buf_init(buf->base, nread);
@@ -82,7 +79,7 @@ int main(int argc,char *argv[]) {
 
 
     status = uv_udp_bind(&server, (const struct sockaddr*)&addr,UV_UDP_REUSEADDR);
-    CHECK(status,"bind");
+    // CHECK(status,"bind");
 
     status = uv_udp_recv_start(&server, alloc_buffer, on_read);
     CHECK(status,"recv");

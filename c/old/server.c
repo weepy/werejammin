@@ -3,7 +3,7 @@
 #include <string.h>
 #include "uv.h"
 
-#define PORT 12345
+#define PORT 3333
 
 #define CHECK(r, msg)                                       \
     if (r<0) {                                              \
@@ -42,7 +42,7 @@ int main(int argc,char *argv[]) {
     uv_ip4_addr("0.0.0.0", PORT, &addr);
 
     status = uv_udp_bind(&server, (const struct sockaddr*)&addr,0);
-    CHECK(status,"bind");
+    // CHECK(status,"bind");
     
     status = uv_udp_recv_start(&server, on_alloc, on_recv);
     CHECK(status,"recv");

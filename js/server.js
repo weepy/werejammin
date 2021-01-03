@@ -13,11 +13,11 @@ server.on('error', (error) => {
 
 // emits on new datagram msg
 server.on('message', (msg,info) => {
-  console.log('Data received from client : ' + msg.toString())
+  // console.log('Data received from client : ' + msg.toString())
   console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port)
 
   //sending msg
-  server.send(msg,info.port,'localhost',function(error){
+  server.send(msg,info.port,info.address,function(error){
     if(error){
       client.close()
     }
@@ -26,8 +26,6 @@ server.on('message', (msg,info) => {
     }
   })
 
-  
-  
 })
 
 //emits when socket is ready and listening for datagram msgs
@@ -45,7 +43,7 @@ server.on('close', () => {
   console.log('Socket is closed !')
 })
 
-server.bind(2222)
+server.bind(3333,'localhost')
 
 
 
