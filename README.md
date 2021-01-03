@@ -1,8 +1,10 @@
 X buffer
 X CPP => C
-
+X remote working
 
 - send and receive sound
     - combine capture and client
 
-- put on server - need to compile for linux :/
+# brew install opus
+# brew install portaudio
+# brew install libuv

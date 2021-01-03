@@ -235,9 +235,7 @@ int main(void)
 
 
     pthread_create(&networking_thread, NULL, setupNetworking, NULL);
-    //setupNetworking();
-
-
+    
     data.currentTimestamp = 0;
     data.remoteBuffer = PacketBuffer_create();
     data.localBuffer = PacketBuffer_create();

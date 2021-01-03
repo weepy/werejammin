@@ -1,5 +1,8 @@
+#include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <opus.h>
+
 #include "portaudio.h"
 
 #include <iostream>
@@ -26,6 +29,9 @@ uint64_t getTimestamp() {
 }
 
 
+OpusEncoder *encoder;
+OpusEncoder *decoder;
+
 #define CHECK(r, msg)                                       \
     if (r<0) {                                              \
         cerr << msg << ": " << uv_strerror(r) << endl;      \
@@ -36,13 +42,14 @@ uint64_t getTimestamp() {
 
 
 // static uv_udp_t* udp_socket = NULL;
-static uv_loop_t *uv_loop;
-static uv_udp_t   sock;
-struct sockaddr_in addr;
+uv_loop_t *uv_loop;
+uv_udp_t   sock;
+struct sockaddr_in send_addr;
+struct sockaddr_in recv_addr;
 
+int PORT = 3333;
+string HOST = "localhost";
 
-#define PORT 3333
-#define HOST "127.0.0.1"
 
 int status;
 
@@ -70,6 +77,7 @@ static void on_send(uv_udp_send_t* req, int status)
         cerr<< "uv_udp_send_cb error: " << uv_strerror(status) << endl;
     }
 }
+
 static int recordCallback( const void *inputBuffer,
                            void *outputBuffer,
                            unsigned long numSamples,
@@ -89,7 +97,7 @@ static int recordCallback( const void *inputBuffer,
 
     uv_udp_send_t* res = new uv_udp_send_t;
     uv_buf_t buff = uv_buf_init((char*) packet, packet->numBytes );
-    uv_udp_send(res, &sock, &buff, 1, (const struct sockaddr*) &addr, on_send);
+    uv_udp_send(res, &sock, &buff, 1, (const struct sockaddr*) &send_addr, on_send);
     
 
     userdata->localBuffer->push(packet);
@@ -137,18 +145,8 @@ static int recordCallback( const void *inputBuffer,
 
 void timer_cb (uv_timer_t* timer, int status) {
 
-    // const char* msg = "hello";
-    // clock_t cpu_time = clock();
-
-    // int64_t now = getTimestamp();
+    // DO PERIODIC STUFF
     
-    // fprintf(stderr, "sending %s %lld \n", msg, (long long) now);
-
-    // uv_udp_send_t* res = malloc(sizeof(uv_udp_send_t));
-    // uv_buf_t buff = uv_buf_init((char*) &now, sizeof(int64_t));
-    // uv_udp_send(res, &sock, &buff, 1, (const struct sockaddr*) &addr, on_send);
-    
-
 }
 
 
@@ -157,7 +155,7 @@ static void on_read(uv_udp_t *req_sock, ssize_t nread, const uv_buf_t *buf,
 {
     (void)flags;
     if (nread < 0) {
-        cerr<< "Read error "<< uv_err_name(nread)<<endl;
+        cerr<< "Read error "<< uv_err_name((int)nread)<<endl;
         uv_close((uv_handle_t*) req_sock, NULL);
         free(buf->base);
         return;
@@ -189,18 +187,42 @@ static void alloc_buffer(uv_handle_t *handle, size_t suggested_size, uv_buf_t *b
 
 
 void *setupNetworking (void *x_void_ptr) {
+    
+    struct hostent *ghbn=gethostbyname(HOST.c_str());//change the domain name
+     if (!ghbn) {
+         printf("couldn't look up ");
+     }
+ 
+     char * ipaddr = inet_ntoa(*(struct in_addr *)ghbn->h_addr);
+ 
+     printf("Host Name->%s\n", ghbn->h_addr);
+     printf("IP ADDRESS->%s\n",ipaddr );
+     
+    
+    
+    uv_timer_t timer;
+    uv_timer_init(uv_loop, &timer);
+    uv_timer_start(&timer, (uv_timer_cb) &timer_cb, 25, 1000);
+    
+    
     uv_loop = uv_default_loop();
-    uv_ip4_addr(HOST, PORT, &addr);
+    uv_ip4_addr(ipaddr, PORT, &send_addr);
     status = uv_udp_init(uv_loop,&sock);
     CHECK(status,"init");
     
     
     // struct sockaddr_in addr;
-    // uv_ip4_addr(RECEIVE_HOST, RECEIVE_PORT, &addr);
-    status = uv_udp_bind(&sock, (const struct sockaddr*)&addr, UV_UDP_REUSEADDR);
+    
+    uv_ip4_addr("0.0.0.0", 0, &recv_addr);
+    status = uv_udp_bind(&sock, (const struct sockaddr*)&recv_addr, UV_UDP_REUSEADDR);
+    CHECK(status,"bind");
+    
+    
     // sCHECK(status,"bind");
     status = uv_udp_recv_start(&sock, alloc_buffer, on_read);
     CHECK(status,"recv");
+    
+    printf("I hope you like Jammin too \n");
     
     uv_run(uv_loop, UV_RUN_DEFAULT);
     return NULL;
@@ -212,8 +234,19 @@ void *setupNetworking (void *x_void_ptr) {
 
 /*******************************************************************/
 
-int main(void)
+int main(int argc, char* argv[])
+
 {
+    
+    if(argc > 1) {
+         PORT = atoi(argv[1]);
+     }
+     if(argc > 2) {
+         HOST = argv[2];
+     }
+    
+    encoder = opus_encoder_create(SAMPLE_RATE, NUM_CHANNELS, OPUS_APPLICATION_AUDIO, &status);
+    
     PaStreamParameters  inputParameters,
                         outputParameters;
     PaStream*           stream;
