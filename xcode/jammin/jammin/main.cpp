@@ -39,9 +39,6 @@ OpusEncoder *decoder;
     }
 
 
-
-
-// static uv_udp_t* udp_socket = NULL;
 uv_loop_t *uv_loop;
 uv_udp_t   sock;
 struct sockaddr_in send_addr;
