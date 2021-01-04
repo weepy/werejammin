@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BD6E2324259FAE6D009B4A6B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BD6E2322259FAE6D009B4A6B /* main.cpp */; };
 		BD6E232725A05FA7009B4A6B /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD6E232625A05FA7009B4A6B /* CoreServices.framework */; };
 		BD6E232925A26EE2009B4A6B /* libopus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BD6E232825A26EE2009B4A6B /* libopus.a */; };
+		BD6E233025A301E9009B4A6B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BD6E232E25A301E9009B4A6B /* main.cpp */; };
 		BDE55ADE259B989B0074F593 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDE55ADD259B989B0074F593 /* CoreAudio.framework */; };
 		BDE55AE0259BA87A0074F593 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDE55ADF259BA87A0074F593 /* AudioToolbox.framework */; };
 		BDE55AE2259BA8810074F593 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDE55AE1259BA8800074F593 /* AudioUnit.framework */; };
@@ -31,10 +31,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		BD6E2322259FAE6D009B4A6B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		BD6E2325259FAEC0009B4A6B /* packet.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = packet.hpp; sourceTree = "<group>"; };
 		BD6E232625A05FA7009B4A6B /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		BD6E232825A26EE2009B4A6B /* libopus.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopus.a; path = ../../../../../../usr/local/Cellar/opus/1.3.1/lib/libopus.a; sourceTree = "<group>"; };
+		BD6E232D25A301E9009B4A6B /* packet.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = packet.hpp; sourceTree = "<group>"; };
+		BD6E232E25A301E9009B4A6B /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		BDE55AD2259B98300074F593 /* jammin */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = jammin; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDE55ADD259B989B0074F593 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		BDE55ADF259BA87A0074F593 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -63,10 +63,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BD6E232A25A301E9009B4A6B /* src */ = {
+			isa = PBXGroup;
+			children = (
+				BD6E232D25A301E9009B4A6B /* packet.hpp */,
+				BD6E232E25A301E9009B4A6B /* main.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		BDE55AC9259B98300074F593 = {
 			isa = PBXGroup;
 			children = (
-				BDE55AD4259B98300074F593 /* jammin */,
+				BD6E232A25A301E9009B4A6B /* src */,
 				BDE55AD3259B98300074F593 /* Products */,
 				BDE55ADC259B989B0074F593 /* Frameworks */,
 			);
@@ -78,15 +87,6 @@
 				BDE55AD2259B98300074F593 /* jammin */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		BDE55AD4259B98300074F593 /* jammin */ = {
-			isa = PBXGroup;
-			children = (
-				BD6E2322259FAE6D009B4A6B /* main.cpp */,
-				BD6E2325259FAEC0009B4A6B /* packet.hpp */,
-			);
-			path = jammin;
 			sourceTree = "<group>";
 		};
 		BDE55ADC259B989B0074F593 /* Frameworks */ = {
@@ -161,7 +161,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD6E2324259FAE6D009B4A6B /* main.cpp in Sources */,
+				BD6E233025A301E9009B4A6B /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,10 +282,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = (
-					/usr/local/include,
-					/usr/local/include/opus,
-				);
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib,
 					/usr/local/Cellar/opus/1.3.1/lib,
@@ -299,10 +296,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = (
-					/usr/local/include,
-					/usr/local/include/opus,
-				);
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib,
 					/usr/local/Cellar/opus/1.3.1/lib,

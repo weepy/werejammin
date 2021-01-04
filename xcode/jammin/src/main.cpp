@@ -1,7 +1,8 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <opus.h>
+#include "json11.hpp"
+#include <opus/opus.h>
 
 #include "portaudio.h"
 
@@ -21,16 +22,14 @@ using namespace std;
 #define NUM_CHANNELS    (1)
 typedef short SAMPLE;
 
-
 uint64_t getTimestamp() {
     struct timeval tv;
     gettimeofday(&tv,NULL);
     return tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
 }
 
-
 OpusEncoder *encoder;
-OpusEncoder *decoder;
+OpusDecoder *decoder;
 
 #define CHECK(r, msg)                                       \
     if (r<0) {                                              \
@@ -75,6 +74,10 @@ static void on_send(uv_udp_send_t* req, int status)
     }
 }
 
+#define MAX_BUFFER_SIZE 1024
+char encoding_buffer[MAX_BUFFER_SIZE]; // MAX
+char decoding_buffer[MAX_BUFFER_SIZE]; // MAX
+
 static int recordCallback( const void *inputBuffer,
                            void *outputBuffer,
                            unsigned long numSamples,
@@ -83,28 +86,17 @@ static int recordCallback( const void *inputBuffer,
                            void *_userData )
 {
     paData *userdata = (paData*)_userData;
-
+    
+    int num = int(numSamples);
     //////////
     // Create and insert new packet from input buffer
     // send
 
-    const SAMPLE *read = (const SAMPLE*)inputBuffer;
-    Packet* packet = new Packet(read, (int)numSamples, userdata->currentTimestamp);
-    
+    const char *read = (const char*)inputBuffer;
 
-    uv_udp_send_t* res = new uv_udp_send_t;
-    uv_buf_t buff = uv_buf_init((char*) packet, packet->numBytes );
-    uv_udp_send(res, &sock, &buff, 1, (const struct sockaddr*) &send_addr, on_send);
+    Packet* localPacket = Packet::create(1, read, num*sizeof(SAMPLE), num, userdata->currentTimestamp);
     
-
-    userdata->localBuffer->push(packet);
-    
-    
-    ///////
-    // Write into output buffer
-    //
-
-
+    userdata->localBuffer->push(localPacket);
     SAMPLE *write = (SAMPLE*)outputBuffer;
 //    Packet* outputPacket = data->localBuffer->pull( data->currentTimestamp - data->delayPackets);
 //
@@ -116,16 +108,60 @@ static int recordCallback( const void *inputBuffer,
 //        delete outputPacket;
 //    }
 //
-    Packet* remoteOutputPacket = userdata->recvBuffer->pull( userdata->currentTimestamp - 20);
-    if(remoteOutputPacket){
-        for( int i=0; i<numSamples; i++ ) {
-            write[i] = remoteOutputPacket->samples[i];
-        }
-
-        delete remoteOutputPacket;
-    }
     
+    opus_int32 enc_bytes = opus_encode(encoder, (opus_int16*)read, num, (unsigned char*) encoding_buffer, MAX_BUFFER_SIZE);
 
+    
+//    Packet* packetToSend = Packet::create(2, encoding_buffer, enc_bytes, num, userdata->currentTimestamp);
+//
+//    uv_udp_send_t* res = new uv_udp_send_t;
+//    uv_buf_t buff = uv_buf_init((char*) packetToSend, packetToSend->numBytes );
+//    uv_udp_send(res, &sock, &buff, 1, (const struct sockaddr*) &send_addr, on_send);
+//
+    
+//    int time = userdata->currentTimestamp - 20;
+//    Packet* recvPacket = packetToSend;//userdata->recvBuffer->pull( time );
+    int dec_bytes;
+    
+//    if(recvPacket){
+        
+//        if(recvPacket->type == 2) {
+            
+            dec_bytes = opus_decode(decoder,
+                (const unsigned char*) encoding_buffer, //(&recvPacket->data),
+                enc_bytes,//recvPacket->dataLength(),
+                (opus_int16 *)decoding_buffer,
+                num, //recvPacket->numSamples,
+                0);
+
+
+                // printf("%i %i\n", dec_bytes, num);
+
+//        }
+//        else {
+//            // NO PACKET
+////            samplesToPlay
+//
+//            cerr<< "unknown packet type: " << recvPacket->type << endl;
+//            for( int i=0; i<numSamples; i++ )
+//               write[i] = 0;
+//        }
+//
+//
+//        Packet::destroy(recvPacket);
+//    }
+//    else {
+//        cerr << "missing packet @" << time << endl;
+//        dec_bytes = opus_decode(decoder, NULL, 0, (opus_int16*) decoding_buffer, BUFFER_SIZE, 0);
+//    }
+
+    for( int i=0; i<numSamples; i++ ) {
+        write[i] = decoding_buffer[i];
+    }
+//
+//    if(packetToSend)
+//        Packet::destroy(packetToSend);
+    
     userdata->currentTimestamp += 1;
 
     return paContinue;
@@ -134,16 +170,22 @@ static int recordCallback( const void *inputBuffer,
 
 /*********** NETWORKING ***********/
 
+float smoothedLatency = 0;
+float maxLatency = 0;
+float smoothing = 0.9;
 
-
-
-
-
+#include <math.h>
 
 void timer_cb (uv_timer_t* timer, int status) {
 
     // DO PERIODIC STUFF
     
+    cerr << "mean: " << floor(smoothedLatency*100)/100.0 ;
+    if(maxLatency > smoothedLatency) {
+        cerr << " (" << maxLatency << ")";
+        maxLatency = 0;
+    }
+    cerr << endl;
 }
 
 
@@ -159,20 +201,22 @@ static void on_read(uv_udp_t *req_sock, ssize_t nread, const uv_buf_t *buf,
     }
 
     if (nread > 0) {
-        char sender[17] = { 0 };
-        uv_ip4_name((const struct sockaddr_in*) addr, sender, 16);
         
-        Packet* b = (Packet*) buf->base;
-        Packet* packet = new Packet(b->samples,b->numSamples,b->timestamp);
+        Packet* packet = (Packet*) buf->base;
         
-        int diff = (int)(userData.currentTimestamp- packet->timestamp);
+        int diff = (int)(userData.currentTimestamp - packet->timestamp);
         
-        cerr << "Recv from " << sender << ": " << "took " << diff << "\n";
+        smoothedLatency = diff * (1.-smoothing) + smoothedLatency * smoothing;
+
+        if(diff > maxLatency) {
+            maxLatency = diff;
+        }
+
         userData.recvBuffer->push(packet);
 
     }
 
-    //free(buf->base);
+
 }
 
 static void alloc_buffer(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf)
@@ -183,23 +227,21 @@ static void alloc_buffer(uv_handle_t *handle, size_t suggested_size, uv_buf_t *b
 }
 
 
-void *setupNetworking (void *x_void_ptr) {
+void *setupUV (void *x_void_ptr) {
     
     struct hostent *ghbn=gethostbyname(HOST.c_str());//change the domain name
-     if (!ghbn) {
-         printf("couldn't look up ");
+    if (!ghbn) {
+        printf("couldn't look up ");
      }
- 
-     char * ipaddr = inet_ntoa(*(struct in_addr *)ghbn->h_addr);
- 
-     printf("Host Name->%s\n", ghbn->h_addr);
-     printf("IP ADDRESS->%s\n",ipaddr );
-     
+    
+    char * ipaddr = inet_ntoa(*(struct in_addr *)ghbn->h_addr);
+
+    printf("Host Name->%s\n", ghbn->h_addr);
+    printf("IP ADDRESS->%s\n",ipaddr );
+
     
     
-    uv_timer_t timer;
-    uv_timer_init(uv_loop, &timer);
-    uv_timer_start(&timer, (uv_timer_cb) &timer_cb, 25, 1000);
+
     
     
     uv_loop = uv_default_loop();
@@ -207,6 +249,9 @@ void *setupNetworking (void *x_void_ptr) {
     status = uv_udp_init(uv_loop,&sock);
     CHECK(status,"init");
     
+    uv_timer_t timer;
+    uv_timer_init(uv_loop, &timer);
+    uv_timer_start(&timer, (uv_timer_cb) &timer_cb, 25, 1000);
     
     // struct sockaddr_in addr;
     
@@ -227,35 +272,42 @@ void *setupNetworking (void *x_void_ptr) {
 
 
 
-
-
 /*******************************************************************/
-
 int main(int argc, char* argv[])
-
 {
     
-    if(argc > 1) {
-         PORT = atoi(argv[1]);
-     }
-     if(argc > 2) {
-         HOST = argv[2];
-     }
+    
+    if(argc > 1)
+        HOST = argv[1];
+    if(argc > 2)
+        PORT = atoi(argv[2]);
     
     encoder = opus_encoder_create(SAMPLE_RATE, NUM_CHANNELS, OPUS_APPLICATION_AUDIO, &status);
+    
+    // opus_encoder_ctl(encoder, OPUS_SET_BITRATE(64000));
+    // opus_encoder_ctl(encoder, OPUS_SET_COMPLEXITY(10));
+    // opus_encoder_ctl(encoder, OPUS_SET_SIGNAL(OPUS_SIGNAL_MUSIC));
+
+
+    
+//    OPUS_SIGNAL_MUSIC
+//    OPUS_FRAMESIZE_2_5_MS
+//    OPUS_SET_COMPLEXITY
+//    OPUS_SET_BITRATE
+//    OPUS_SET_VBR
+    
+    //
+    decoder = opus_decoder_create(SAMPLE_RATE, NUM_CHANNELS, &status);
     
     PaStreamParameters  inputParameters,
                         outputParameters;
     PaStream*           stream;
     PaError             err = paNoError;
     
-
-    printf("patest_record.c\n"); fflush(stdout);
-
-
-    pthread_create(&networking_thread, NULL, setupNetworking, NULL);
-    //setupNetworking();
-
+    printf("patest_record.c\n");
+    
+    pthread_create(&networking_thread, NULL, setupUV, NULL);
+    
 
     userData.currentTimestamp = 0;
     userData.recvBuffer = new PacketBuffer();

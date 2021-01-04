@@ -1,9 +1,14 @@
-X buffer
-X CPP => C
-X remote working
 
-- send and receive sound
-    - combine capture and client
+
+- OPUS or PCM
+
+- Multiple clients
+
+
+
+
+TO BUILD
+========
 
 # brew install opus
 # brew install portaudio
